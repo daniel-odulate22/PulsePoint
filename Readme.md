@@ -54,13 +54,14 @@ npm install
 ```
 
 # Create a .env file and add your MONGO_URI, JWT_SECRET, and NEWS_API_KEY
+
 ```
 npm start
 ```
 # Run Frontend
  Simply open client/index.html in your browser.
  Or use VS Code "Live Server" extension for the best experience.
- 
+
 
 ## 🔑 Environment Variables
 To run this project, you will need to add the following environment variables to your .env file (locally) or Vercel project settings (deployment):
