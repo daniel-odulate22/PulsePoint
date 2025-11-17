@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PulsePoint | Article</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="top-bar">
+            <a href="index.html" class="logo-container">
+                <span class="logo-text">PulsePoint</span>
+            </a>
+            <a href="index.html" class="btn-auth btn-login">Back to Home</a>
+        </div>
+    </header>
+
+    <div class="article-container" id="article-content">
+        <p>Loading Article...</p>
+    </div>
+
+    <footer>
+        <p class="copyright">&copy; 2025 PulsePoint.</p>
+    </footer>
+
+    <script src="app.js"></script>
+    <script>
+        // Auto-load article logic
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+        if(id) loadArticleDetail(id);
+    </script>
+</body>
+</html>

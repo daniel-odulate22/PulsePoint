@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register - PulsePoint</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="auth-container">
+        <h2 class="section-header" style="border:none;">Create Account</h2>
+        <form id="register-form">
+            <input type="text" id="reg-name" class="auth-input" placeholder="Full Name" required>
+            <input type="email" id="reg-email" class="auth-input" placeholder="Email Address" required>
+            
+            <select class="auth-select">
+                <option value="user">Regular User (Reader)</option>
+                <option value="admin" disabled>Admin (Unavailable)</option>
+            </select>
+
+            <input type="password" id="reg-pass" class="auth-input" placeholder="Password" required>
+            <button type="submit" class="auth-btn">Sign Up</button>
+        </form>
+        <p style="margin-top:15px;">Already a member? <a href="login.html" style="color:var(--primary);">Log In</a></p>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
