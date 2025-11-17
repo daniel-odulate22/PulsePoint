@@ -3,32 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <title>PulsePoint | Article</title>
+    <link rel="icon" href="assets/pulsepoint_logo.png" type="image/x-icon">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+
     <header>
         <div class="top-bar">
             <a href="index.html" class="logo-container">
+                <img src="assets/pulsepoint_logo.png" alt="PulsePoint" class="logo-img">
                 <span class="logo-text">PulsePoint</span>
             </a>
-            <a href="index.html" class="btn-auth btn-login">Back to Home</a>
+            <div>
+                <a href="index.html" class="btn-auth btn-login"><i class="fa-solid fa-arrow-left"></i> Back to News</a>
+            </div>
         </div>
     </header>
 
-    <div class="article-container" id="article-content">
-        <p>Loading Article...</p>
+    <div id="article-content" style="padding: 40px 20px;">
+        <p style="text-align:center;">Loading article...</p>
     </div>
 
     <footer>
-        <p class="copyright">&copy; 2025 PulsePoint.</p>
+        <div class="footer-logo">PulsePoint</div>
+        <p class="copyright">&copy; 2025 PulsePoint Media.</p>
     </footer>
 
     <script src="app.js"></script>
-    <script>
-        // Auto-load article logic
-        const params = new URLSearchParams(window.location.search);
-        const id = params.get('id');
-        if(id) loadArticleDetail(id);
-    </script>
 </body>
 </html>

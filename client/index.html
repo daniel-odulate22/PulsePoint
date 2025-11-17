@@ -3,21 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="PulsePoint - Your Gateway to the Latest News Across Technology, Health, Science, Sports, Entertainment, and Nigeria. Stay Informed with Real-Time Updates and Trending Stories.">
     <title>PulsePoint | News Without Bias</title>
-    <link rel ="icon" href="assets/pulsepoint_logo.png" type="image/x-icon">
+    <link rel="icon" href="assets/pulsepoint_logo.png" type="image/x-icon">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
     <header>
         <div class="top-bar">
-            <div class="logo-container">
+            <a href="index.html" class="logo-container">
                 <img src="assets/pulsepoint_logo.png" alt="PulsePoint" class="logo-img">
                 <span class="logo-text">PulsePoint</span>
-            </div>
+            </a>
             <div class="search-auth-box">
-                <input type="text" id="search-input" class="search-bar" placeholder="Search news...">
+                <div class="search-wrapper">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" id="search-input" class="search-bar" placeholder="Search news...">
+                </div> <br>
                 <div id="auth-buttons">
                     <a href="login.html" class="btn-auth btn-login">Log In</a>
                     <a href="register.html" class="btn-auth btn-register">Sign Up</a>
@@ -32,40 +35,24 @@
                 <a class="nav-link" onclick="loadCategory('Science')">Science</a>
                 <a class="nav-link" onclick="loadCategory('Sports')">Sports</a>
                 <a class="nav-link" onclick="loadCategory('Entertainment')">Entertainment</a>
+                <a class="nav-link" onclick="loadCategory('Business')">Business</a>
                 <a class="nav-link" onclick="loadCategory('Nigeria')">Nigeria</a>
             </div>
         </div>
     </header>
 
     <div class="container">
-        
         <main class="main-content">
             <div class="section-header" id="page-title">Hot Headlines</div>
             
-            <div id="hero-container"></div>
-
-            <div class="news-feed" id="news-feed">
+            <div class="bento-grid" id="news-feed">
                 <p>Loading news...</p>
             </div>
         </main>
-
-        <aside class="sidebar">
-            <div class="section-header">Trending</div>
-            <div class="trending-list" id="trending-list">
-                <p>Loading...</p>
-            </div>
-        </aside>
-
     </div>
 
     <footer>
         <div class="footer-logo">PulsePoint</div>
-        <div class="footer-links">
-            <a href="#">Tech</a>
-            <a href="#">Health</a>
-            <a href="#">Sports</a>
-            <a href="#">Nigeria</a>
-        </div>
         <p class="copyright">&copy; 2025 PulsePoint Media. All Rights Reserved.</p>
     </footer>
 

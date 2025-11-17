@@ -1,136 +1,129 @@
 // app.js
 const API_URL = 'http://localhost:5000/api';
 
-/* --- 1. HOME PAGE LOGIC --- */
-async function loadNews(category = '') {
-    const newsFeed = document.getElementById('news-feed');
-    const heroContainer = document.getElementById('hero-container');
-    const title = document.getElementById('page-title');
+// --- 1. INITIALIZATION ---
+document.addEventListener('DOMContentLoaded', () => {
+    checkLoginState();
     
-    if (!newsFeed) return; // Not on home page
+    // If on index.html (Feed exists)
+    if (document.getElementById('news-feed')) {
+        loadNews(); 
+    }
+    
+    // If on article.html (Content exists)
+    if (document.getElementById('article-content')) {
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+        if(id) loadFullArticle(id);
+    }
+});
 
-    if (category) title.innerText = `${category} News`;
+// --- 2. LOAD NEWS (Bento Grid) ---
+async function loadNews(category = '') {
+    const feed = document.getElementById('news-feed');
+    const title = document.getElementById('page-title');
+
+    feed.innerHTML = '<p style="padding:20px;">Loading news...</p>';
     
+    if (category) title.innerText = `${category} News`;
+    else title.innerText = 'Hot Headlines';
+
     try {
-        // Fetch data
         const res = await fetch(`${API_URL}/articles`);
         let articles = await res.json();
 
-        // Filter if category selected
+        // Client-side filtering
         if (category) {
             articles = articles.filter(a => a.category === category);
         }
 
-        // Render Hero (First Article)
-        if (articles.length > 0) {
-            const hero = articles[0];
-            renderHero(hero, heroContainer);
-            
-            // Render Rest (Skip first)
-            const rest = articles.slice(1);
-            newsFeed.innerHTML = rest.map(article => createNewsCard(article)).join('');
-        } else {
-            newsFeed.innerHTML = '<p>No articles found.</p>';
+        // Client-side Search filtering
+        const searchQuery = document.getElementById('search-input')?.value.toLowerCase();
+        if(searchQuery) {
+             articles = articles.filter(a => a.title.toLowerCase().includes(searchQuery));
+             title.innerText = `Search Results: "${searchQuery}"`;
         }
 
-    } catch (err) {
-        console.error(err);
-        newsFeed.innerHTML = '<p>Error loading news.</p>';
-    }
-}
+        if (articles.length === 0) {
+            feed.innerHTML = '<p>No articles found.</p>';
+            return;
+        }
 
-// Render Sidebar (Trending)
-async function loadTrending() {
-    const container = document.getElementById('trending-list');
-    if (!container) return;
-
-    try {
-        const res = await fetch(`${API_URL}/articles/trending`);
-        const articles = await res.json();
-
-        container.innerHTML = articles.slice(0, 5).map(article => `
-            <div class="trending-item" onclick="goToArticle('${article._id}')">
-                <div class="trending-rank"></div>
-                <div class="trending-info">
-                    <span>${article.category}</span>
-                    <h4>${article.title}</h4>
-                </div>
-            </div>
-        `).join('');
+        feed.innerHTML = articles.map((article) => createBentoCard(article)).join('');
 
     } catch (err) {
         console.error(err);
+        feed.innerHTML = '<p>Failed to load news. Is the server running?</p>';
     }
 }
 
-/* --- 2. HTML GENERATORS --- */
-function renderHero(article, container) {
-    const img = article.imageUrl || 'https://via.placeholder.com/800x400?text=PulsePoint';
-    container.innerHTML = `
-        <div class="hero-article" onclick="goToArticle('${article._id}')">
-            <img src="${img}" class="hero-img" alt="${article.title}">
-            <div class="hero-text">
-                <span class="hero-category">${article.category}</span>
-                <h2 class="hero-title">${article.title}</h2>
-                <p class="hero-excerpt">${article.excerpt}</p>
-            </div>
-        </div>
-    `;
-}
-
-function createNewsCard(article) {
-    const img = article.imageUrl || 'https://via.placeholder.com/300x200?text=PulsePoint';
+function createBentoCard(article) {
+    const img = article.imageUrl || 'https://via.placeholder.com/600x400?text=PulsePoint';
+    const comments = Math.floor(Math.random() * 50); // Demo data
+    
     return `
-        <div class="news-card" onclick="goToArticle('${article._id}')">
-            <img src="${img}" alt="${article.title}">
-            <div class="news-info">
-                <div class="news-meta">
-                    <span>${article.category}</span>
-                    <span>${new Date(article.createdAt).toLocaleDateString()}</span>
+        <div class="news-card">
+            <span class="card-category">${article.category}</span>
+            <div class="card-img-wrap" onclick="goToArticle('${article._id}')" style="cursor:pointer;">
+                <img src="${img}" class="card-img" alt="${article.title}">
+            </div>
+            <div class="card-content" onclick="goToArticle('${article._id}')" style="cursor:pointer;">
+                <h3 class="card-title">${article.title}</h3>
+                <p class="card-excerpt">${article.excerpt || ''}</p>
+            </div>
+            <div class="card-actions">
+                <div class="action-btn" onclick="toggleLike(this)">
+                    <i class="fa-regular fa-heart"></i> <span>Like</span>
                 </div>
-                <h3>${article.title}</h3>
-                <p>${article.excerpt}</p>
-                <div class="actions">
-                    <button class="icon-btn" title="Like">♥</button>
-                    <button class="icon-btn" title="Save">🔖</button>
+                <div class="action-btn">
+                    <i class="fa-regular fa-comment"></i> <span>${comments}</span>
+                </div>
+                <div class="action-btn" onclick="toggleSave(this)">
+                    <i class="fa-regular fa-bookmark"></i> <span>Save</span>
                 </div>
             </div>
         </div>
     `;
 }
 
-/* --- 3. NAVIGATION & ACTIONS --- */
-function goToArticle(id) {
-    window.location.href = `article.html?id=${id}`;
-}
-
-function loadCategory(cat) {
-    loadNews(cat);
-}
-
-/* --- 4. ARTICLE DETAIL PAGE --- */
-async function loadArticleDetail(id) {
+// --- 3. FULL ARTICLE PAGE (Handling Truncation) ---
+async function loadFullArticle(id) {
     const container = document.getElementById('article-content');
     try {
         const res = await fetch(`${API_URL}/articles/${id}`);
         const article = await res.json();
-
         const img = article.imageUrl || 'https://via.placeholder.com/800x400';
         
+        // Check if text is truncated (common with NewsAPI)
+        // NewsAPI usually ends content with chars like "[+1234 chars]"
+        const isTruncated = article.content && article.content.includes('[+');
+        
         container.innerHTML = `
-            <div class="article-header">
-                <h1>${article.title}</h1>
-                <div class="article-meta">
-                    <span>By ${article.author?.name || 'PulsePoint Team'}</span>
-                    <span>${new Date(article.createdAt).toDateString()}</span>
+            <div class="article-view">
+                <span style="color:#FF6600; font-weight:bold; text-transform:uppercase;">${article.category}</span>
+                <h1 class="article-headline">${article.title}</h1>
+                
+                <div class="article-meta-row">
+                    <span><i class="fa-solid fa-pen-nib"></i> PulsePoint Desk</span>
+                    <span><i class="fa-regular fa-calendar"></i> ${new Date(article.createdAt).toDateString()}</span>
+                    <span><i class="fa-regular fa-eye"></i> ${article.views} Reads</span>
                 </div>
-            </div>
-            <img src="${img}" class="full-img">
-            <div class="article-body">
-                <p>${article.content}</p>
-            </div>
-            <div class="actions" style="margin-top:30px;">
-                 <button class="auth-btn" style="width:auto;">Like Article</button>
+
+                <img src="${img}" class="article-hero-img">
+
+                <div class="article-text">
+                    <p>${article.content}</p>
+                    
+                    ${isTruncated ? `
+                        <div style="background:#f9f9f9; padding:30px; margin-top:40px; border-left:5px solid #FF6600; border-radius:4px;">
+                            <h3>Continue Reading</h3>
+                            <p>This article is from an external source. Read the full story at the original publisher.</p>
+                            <a href="${article.url || '#'}" target="_blank" class="source-btn">
+                                Read Full Story <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </div>
+                    ` : ''}
+                </div>
             </div>
         `;
     } catch (err) {
@@ -138,87 +131,60 @@ async function loadArticleDetail(id) {
     }
 }
 
-/* --- 5. SEARCH --- */
-const searchInput = document.getElementById('search-input');
-if (searchInput) {
-    searchInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            alert('Search functionality requires backend update to support query params. Filtering frontend for now...');
-            // You can implement frontend filtering here if you fetched all articles
-        }
-    });
-}
-
-/* --- 6. AUTH LOGIC --- */
-const loginForm = document.getElementById('login-form');
-if (loginForm) {
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('login-email').value;
-        const password = document.getElementById('login-pass').value;
-        
-        try {
-            const res = await fetch(`${API_URL}/auth/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-            const data = await res.json();
-            if (res.ok) {
-                localStorage.setItem('token', data.token);
-                alert('Login Successful');
-                window.location.href = 'index.html';
-            } else {
-                alert(data.msg || 'Login failed');
-            }
-        } catch (err) {
-            console.error(err);
-        }
-    });
-}
-
-const regForm = document.getElementById('register-form');
-if (regForm) {
-    regForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const name = document.getElementById('reg-name').value;
-        const email = document.getElementById('reg-email').value;
-        const password = document.getElementById('reg-pass').value;
-        
-        try {
-            const res = await fetch(`${API_URL}/auth/register`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, email, password })
-            });
-            const data = await res.json();
-            if (res.ok) {
-                localStorage.setItem('token', data.token);
-                alert('Registration Successful');
-                window.location.href = 'index.html';
-            } else {
-                alert(data.msg || 'Failed to register');
-            }
-        } catch (err) {
-            console.error(err);
-        }
-    });
-}
-
-// Initialization
-document.addEventListener('DOMContentLoaded', () => {
-    loadNews(); // Load Home
-    loadTrending(); // Load Sidebar
-    
-    // Check Login Status
-    const token = localStorage.getItem('token');
-    if(token) {
-        const authBtns = document.getElementById('auth-buttons');
-        if(authBtns) authBtns.innerHTML = '<button class="btn-auth btn-login" onclick="logout()">Logout</button>';
+// --- 4. ACTIONS & UTILS ---
+function toggleLike(btn) {
+    const icon = btn.querySelector('i');
+    if (icon.classList.contains('fa-regular')) {
+        icon.classList.remove('fa-regular');
+        icon.classList.add('fa-solid');
+        btn.style.color = '#FF6600';
+    } else {
+        icon.classList.remove('fa-solid');
+        icon.classList.add('fa-regular');
+        btn.style.color = '#888';
     }
-});
+}
+
+function toggleSave(btn) {
+    const icon = btn.querySelector('i');
+    if (icon.classList.contains('fa-regular')) {
+        icon.classList.remove('fa-regular');
+        icon.classList.add('fa-solid'); 
+        btn.style.color = '#FF6600';
+    } else {
+        icon.classList.remove('fa-solid');
+        icon.classList.add('fa-regular');
+        btn.style.color = '#888';
+    }
+}
+
+function checkLoginState() {
+    const token = localStorage.getItem('token');
+    const authContainer = document.getElementById('auth-buttons');
+    if (token && authContainer) {
+        authContainer.innerHTML = '<button class="btn-auth btn-login" onclick="logout()">Logout</button>';
+    }
+}
 
 function logout() {
     localStorage.removeItem('token');
     window.location.reload();
+}
+
+function loadCategory(cat) {
+    loadNews(cat);
+}
+
+function goToArticle(id) {
+    window.location.href = `article.html?id=${id}`;
+}
+
+// Search
+const searchInput = document.getElementById('search-input');
+if(searchInput) {
+    searchInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            loadNews(); 
+        }
+    });
 }

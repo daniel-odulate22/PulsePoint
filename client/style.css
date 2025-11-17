@@ -1,12 +1,12 @@
 /* style.css */
 :root {
-    --primary: #FF6600; /* PulsePoint Orange */
+    --primary: #FF6600;
     --black: #121212;
     --dark-gray: #333;
     --light-gray: #f4f4f4;
     --border: #e2e2e2;
-    --font-head: 'Georgia', 'Times New Roman', serif; /* News Headlines */
-    --font-body: 'Arial', sans-serif; /* UI Text */
+    --font-head: 'Georgia', serif;
+    --font-body: 'Arial', sans-serif;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -15,217 +15,145 @@ body {
     font-family: var(--font-body);
     background-color: #fff;
     color: var(--black);
-    line-height: 1.5;
 }
 
-a { text-decoration: none; color: inherit; transition: 0.2s; }
-a:hover { color: var(--primary); }
+a { text-decoration: none; color: inherit; cursor: pointer; }
 
-/* --- 1. HEADER (Static, Standard News Look) --- */
-header {
-    border-bottom: 1px solid var(--border);
-    padding: 15px 0;
-    background: white;
-}
-
-.top-bar {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-}
-
+/* --- HEADER --- */
+header { border-bottom: 1px solid var(--border); background: white; position: sticky; top: 0; z-index: 1000; }
+.top-bar { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; }
 .logo-container { display: flex; align-items: center; gap: 10px; }
 .logo-img { height: 40px; }
-.logo-text {
-    font-size: 2rem;
-    font-weight: 900;
-    font-family: var(--font-body);
-    color: var(--primary);
-    letter-spacing: -1px;
-}
+.logo-text { font-size: 2rem; font-weight: 900; color: var(--primary); letter-spacing: -1px; }
 
-.search-auth-box { display: flex; gap: 15px; align-items: center; }
+.search-wrapper { position: relative; margin-right: 25px; }
+.search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #888; }
+.search-bar { padding: 8px 10px 8px 35px; border: 1px solid var(--border); border-radius: 20px; width: 250px; font-size: 0.9rem; outline: none; margin-right: 50px; }
 
-.search-bar {
-    padding: 8px 12px;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    font-size: 0.9rem;
-    width: 200px;
-}
+.btn-auth { font-weight: bold; font-size: 0.9rem; padding: 8px 20px; border-radius: 4px; }
+.btn-login { color: var(--black); margin-right: 10px; }
+.btn-register { background: var(--black); color: white; }
 
-.btn-auth {
-    font-weight: bold;
-    font-size: 0.9rem;
-    padding: 8px 15px;
-    border-radius: 4px;
-}
-.btn-login { background: var(--light-gray); color: var(--black); }
-.btn-register { background: var(--primary); color: white; }
-
-/* --- NAVIGATION SECTIONS --- */
-.nav-sections {
-    border-top: 1px solid var(--border);
-    border-bottom: 4px solid var(--black); /* BBC Style heavy bottom line */
-    margin-top: 15px;
-}
-
-.nav-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    gap: 25px;
-    padding: 10px 20px;
-    overflow-x: auto;
-}
-
-.nav-link {
-    font-weight: 700;
-    font-size: 0.95rem;
-    text-transform: uppercase;
-    color: var(--dark-gray);
-    white-space: nowrap;
-    cursor: pointer;
-}
+/* --- NAV --- */
+.nav-sections { border-top: 1px solid var(--border); border-bottom: 4px solid var(--black); }
+.nav-container { max-width: 1200px; margin: 0 auto; display: flex; gap: 30px; padding: 12px 20px; overflow-x: auto; }
+.nav-link { font-weight: 700; font-size: 0.9rem; text-transform: uppercase; color: var(--dark-gray); }
 .nav-link:hover { color: var(--primary); }
 
-/* --- 2. MAIN LAYOUT (Grid: Main Content vs Sidebar) --- */
+/* --- LAYOUT --- */
+/* Full width container now */
 .container {
-    max-width: 1200px;
-    margin: 30px auto;
+    max-width: 1300px; /* Increased width since sidebar is gone */
+    margin: 40px auto;
     padding: 0 20px;
-    display: grid;
-    grid-template-columns: 70% 1fr; /* 70% Main, Rest Sidebar */
-    gap: 40px;
 }
-
-/* --- LEFT COLUMN: HERO & NEWS FEED --- */
-.main-content { display: flex; flex-direction: column; gap: 30px; }
 
 .section-header {
     font-family: var(--font-head);
-    font-size: 1.8rem;
-    border-left: 5px solid var(--primary);
+    font-size: 2rem;
+    font-weight: bold;
+    border-left: 6px solid var(--primary);
     padding-left: 15px;
-    margin-bottom: 20px;
-}
-
-/* The "Hot" Hero Article (Big Image) */
-.hero-article {
-    position: relative;
     margin-bottom: 30px;
-    cursor: pointer;
 }
-.hero-img {
-    width: 100%;
-    height: 400px;
-    object-fit: cover;
-    border-radius: 4px;
-}
-.hero-text {
-    margin-top: 15px;
-}
-.hero-category { color: var(--primary); font-weight: bold; text-transform: uppercase; font-size: 0.8rem; }
-.hero-title { font-family: var(--font-head); font-size: 2.2rem; font-weight: 700; margin: 5px 0; line-height: 1.2; }
-.hero-excerpt { color: var(--dark-gray); font-size: 1.1rem; margin-top: 8px; }
 
-/* Standard News Feed (List View) */
-.news-feed { display: flex; flex-direction: column; gap: 25px; border-top: 1px solid var(--border); padding-top: 25px; }
-
-.news-card {
-    display: flex;
+/* --- ADVANCED BENTO GRID --- */
+.bento-grid {
+    display: grid;
+    /* Creates flexible columns that are at least 280px wide */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
-    align-items: start;
-    padding-bottom: 25px;
-    border-bottom: 1px solid var(--border);
-    cursor: pointer;
+    grid-auto-flow: dense; /* This packs items tightly to remove gaps */
 }
-.news-card img {
-    width: 240px;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 4px;
-}
-.news-info h3 {
-    font-family: var(--font-head);
-    font-size: 1.4rem;
-    margin-bottom: 8px;
-    line-height: 1.3;
-}
-.news-info p { font-size: 0.95rem; color: #555; margin-bottom: 10px; }
-.news-meta { font-size: 0.8rem; color: #888; display: flex; gap: 15px; }
 
-/* Actions (Like/Save) */
-.actions { display: flex; gap: 10px; margin-top: 5px; }
-.icon-btn { border: none; background: none; cursor: pointer; color: #888; font-size: 1.1rem; }
-.icon-btn:hover { color: var(--primary); }
-
-/* --- RIGHT COLUMN: TRENDING (Sidebar) --- */
-.sidebar {
-    border-left: 1px solid var(--border);
-    padding-left: 30px;
-}
-.trending-list {
+/* Card Base Styles */
+.news-card {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    counter-reset: trend-counter;
-}
-.trending-item {
-    display: flex;
-    gap: 15px;
-    align-items: flex-start;
-    cursor: pointer;
-}
-.trending-rank {
-    font-size: 2rem;
-    font-weight: 900;
-    color: var(--border); /* Light grey number */
-    line-height: 1;
-    counter-increment: trend-counter;
-}
-.trending-rank::before { content: counter(trend-counter); }
-
-.trending-info h4 {
-    font-family: var(--font-head);
-    font-size: 1.1rem;
-    font-weight: 600;
-}
-.trending-info span { font-size: 0.75rem; color: var(--primary); font-weight: bold; text-transform: uppercase; }
-
-/* --- 3. ARTICLE PAGE SPECIFIC --- */
-.article-container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
-.article-header h1 { font-family: var(--font-head); font-size: 3rem; line-height: 1.1; margin-bottom: 20px; }
-.article-meta { display: flex; justify-content: space-between; color: #666; margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
-.full-img { width: 100%; max-height: 500px; object-fit: cover; margin-bottom: 30px; }
-.article-body { font-size: 1.2rem; line-height: 1.8; font-family: var(--font-head); color: #222; }
-.comment-section { margin-top: 50px; border-top: 4px solid var(--black); padding-top: 30px; }
-
-/* --- 4. AUTH FORMS --- */
-.auth-container { max-width: 400px; margin: 80px auto; padding: 30px; border: 1px solid var(--border); border-radius: 8px; text-align: center; }
-.auth-input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; }
-.auth-btn { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; font-weight: bold; cursor: pointer; font-size: 1rem; }
-.auth-select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; }
-
-/* --- 5. FOOTER --- */
-footer {
     background: white;
-    border-top: 4px solid var(--primary);
-    padding: 40px 20px;
-    text-align: center;
-    margin-top: 60px;
+    transition: transform 0.2s;
+    height: 100%;
+    position: relative;
 }
-.footer-logo { color: var(--primary); font-family: var(--font-body); font-weight: 900; font-size: 1.5rem; margin-bottom: 10px; }
-.footer-links { display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; font-weight: bold; font-size: 0.9rem; }
-.copyright { color: #888; font-size: 0.8rem; }
+.news-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+
+.card-img-wrap { position: relative; overflow: hidden; height: 200px; width: 100%; }
+.card-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+.news-card:hover .card-img { transform: scale(1.05); }
+
+.card-category {
+    position: absolute; top: 10px; left: 10px;
+    background: var(--primary); color: white;
+    padding: 4px 8px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase;
+    border-radius: 3px; z-index: 2;
+}
+
+.card-content { padding: 15px; display: flex; flex-direction: column; flex-grow: 1; }
+.card-title { font-family: var(--font-head); font-size: 1.1rem; margin-bottom: 8px; line-height: 1.3; font-weight: 700; }
+.card-excerpt { font-size: 0.85rem; color: #555; flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+.card-actions {
+    border-top: 1px solid var(--border);
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    color: #888;
+    font-size: 0.85rem;
+    background: #fafafa;
+}
+.action-btn { cursor: pointer; display: flex; align-items: center; gap: 5px; transition: 0.2s; }
+.action-btn:hover { color: var(--primary); }
+
+
+/* --- BENTO VARIATIONS (The Mosaic Layout) --- */
+
+/* 1. HERO: The First Card (Huge, Top Left) */
+.news-card:nth-child(1) {
+    grid-column: span 2; 
+    grid-row: span 2;
+}
+.news-card:nth-child(1) .card-img-wrap { height: 100%; position: absolute; z-index: 0; }
+.news-card:nth-child(1) .card-content {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+    color: white; z-index: 1; height: 100%; justify-content: flex-end;
+}
+.news-card:nth-child(1) .card-title { font-size: 2rem; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.6); }
+.news-card:nth-child(1) .card-excerpt { color: #ddd; -webkit-line-clamp: 2; }
+.news-card:nth-child(1) .card-actions { display: none; } /* Hide actions on hero for cleaner look */
+
+/* 2. FEATURE: The 5th and 10th cards (Wide) */
+.news-card:nth-child(5), .news-card:nth-child(10) {
+    grid-column: span 2;
+}
+.news-card:nth-child(5) .card-img-wrap { height: 250px; }
+
+
+/* --- ARTICLE VIEW --- */
+.article-view { max-width: 800px; margin: 0 auto; padding-bottom: 60px; }
+.article-hero-img { width: 100%; height: 500px; object-fit: cover; margin-bottom: 30px; border-radius: 8px; }
+.article-headline { font-family: var(--font-head); font-size: 3rem; line-height: 1.1; margin-bottom: 20px; color: var(--black); }
+.article-meta-row { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 15px 0; margin-bottom: 40px; display: flex; justify-content: space-between; color: #555; font-size: 0.9rem; }
+.article-text { font-size: 1.25rem; line-height: 1.8; color: #222; font-family: 'Georgia', serif; }
+
+/* "Read Source" Button for truncated news */
+.source-btn {
+    display: inline-block; margin-top: 20px; padding: 12px 25px;
+    background-color: var(--primary); color: white; font-weight: bold;
+    border-radius: 5px; text-transform: uppercase; font-size: 0.9rem;
+}
+.source-btn:hover { opacity: 0.9; }
+
+/* --- FOOTER --- */
+footer { margin-top: 80px; padding: 40px; background: #1a1a1a; text-align: center; color: white; }
+.footer-logo { font-size: 1.5rem; font-weight: 900; margin-bottom: 10px; }
+.copyright { color: #666; font-size: 0.8rem; }
 
 /* --- RESPONSIVE --- */
-@media (max-width: 900px) {
-    .container { grid-template-columns: 1fr; }
-    .sidebar { border-left: none; border-top: 1px solid var(--border); padding-left: 0; padding-top: 30px; }
-    .news-card { flex-direction: column; }
-    .news-card img { width: 100%; height: 200px; }
+@media (max-width: 768px) {
+    .bento-grid { grid-template-columns: 1fr; } /* Stack on mobile */
+    .news-card:nth-child(n) { grid-column: auto; grid-row: auto; } /* Disable bento on mobile */
 }

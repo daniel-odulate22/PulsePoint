@@ -6,21 +6,21 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="auth-container">
-        <h2 class="section-header" style="border:none;">Create Account</h2>
-        <form id="register-form">
-            <input type="text" id="reg-name" class="auth-input" placeholder="Full Name" required>
-            <input type="email" id="reg-email" class="auth-input" placeholder="Email Address" required>
+    <div class="auth-box">
+        <h2 style="margin-bottom:20px;">Join PulsePoint</h2>
+        <form id="reg-form">
+            <input type="text" id="name" class="auth-input" placeholder="Full Name" required>
+            <input type="email" id="email" class="auth-input" placeholder="Email" required>
+            <input type="password" id="password" class="auth-input" placeholder="Password" required>
             
-            <select class="auth-select">
-                <option value="user">Regular User (Reader)</option>
-                <option value="admin" disabled>Admin (Unavailable)</option>
+            <select class="auth-input" style="background:#f4f4f4; color:#888;">
+                <option value="user">Reader (Standard)</option>
+                <option value="admin" disabled>Admin (Disabled)</option>
             </select>
 
-            <input type="password" id="reg-pass" class="auth-input" placeholder="Password" required>
-            <button type="submit" class="auth-btn">Sign Up</button>
+            <button type="submit" class="submit-btn">Sign Up</button>
         </form>
-        <p style="margin-top:15px;">Already a member? <a href="login.html" style="color:var(--primary);">Log In</a></p>
+        <p style="margin-top:20px; font-size:0.9rem;">Already have an account? <a href="login.html" style="color:var(--primary); font-weight:bold;">Log In</a></p>
     </div>
     <script src="app.js"></script>
 </body>
