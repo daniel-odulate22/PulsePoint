@@ -26,6 +26,10 @@ PulsePoint is a modern, user-friendly news aggregation platform designed to deli
 PulsePoint/
 ├── client/             # The Static Frontend
 │   ├── index.html      # Home Page
+│   ├── login.html      # Login page
+│   ├── register.html   # Sign-up page
+│   ├── profile.html    # Profile page
+│   ├── article.html    # Article page
 │   ├── style.css       # Global Styles
 │   ├── app.js          # Frontend Logic & API Calls
 │   └── assets/         # Images & Logos
