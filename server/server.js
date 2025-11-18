@@ -2,45 +2,45 @@ const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const { startNewsAggregator } = require('./services/newsAggregator');
+
+// --- 1. EXPLICITLY IMPORT ROUTES ---
+// If these files are missing or broken, the server will crash here with a clear error.
 const authRoutes = require('./routes/auth');
 const articleRoutes = require('./routes/articles');
-const {startNewsAggregator} = require('./services/newsAggregator');
+const userRoutes = require('./routes/user');
 
-// Load environment variables (from .env file)
 dotenv.config();
-
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors()); // Allows your React frontend to talk to this backend
-app.use(express.json()); // Allows the server to accept JSON data
+app.use(cors());
+app.use(express.json());
 
-// --- Database Connection ---
+// --- 2. DEBUG MIDDLEWARE ---
+app.use((req, res, next) => {
+  console.log(`Request: ${req.method} ${req.url}`);
+  next();
+});
+
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
-    console.log('MongoDB connected successfully!');
+    console.log('✅ MongoDB Connected');
+    startNewsAggregator();
   } catch (err) {
-    console.error('Failed to connect to MongoDB', err);
-    process.exit(1); // Exit process with failure
+    console.error('❌ DB Error:', err);
+    process.exit(1);
   }
 };
+connectDB();
 
-// Run the database connection function
-connectDB().then(() => {
-  startNewsAggregator(); // Start the news aggregator after DB connection 
-});
-
-// --- API Routes ---
-app.get('/', (req, res) => {
-  res.send('PulsePoint API is running...');
-});
-
-app.use('/api/auth', authRoutes); 
+// --- 3. MOUNT ROUTES ---
+// This connects the imported files to the URLs
+app.use('/api/auth', authRoutes);
 app.use('/api/articles', articleRoutes);
+app.use('/api/user', userRoutes);
 
-// --- Start the Server ---
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+app.get('/', (req, res) => res.send('PulsePoint API is Running'));
+
+app.listen(PORT, () => console.log(`🚀 Server started on port ${PORT}`));

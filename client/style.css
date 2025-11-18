@@ -152,6 +152,69 @@ footer { margin-top: 80px; padding: 40px; background: #1a1a1a; text-align: cente
 .footer-logo { font-size: 1.5rem; font-weight: 900; margin-bottom: 10px; }
 .copyright { color: #666; font-size: 0.8rem; }
 
+/* --- AUTH PAGES STYLING (Paste at the bottom of style.css) --- */
+
+.auth-box {
+    max-width: 400px;
+    margin: 80px auto; /* Centers it vertically and horizontally */
+    padding: 40px;
+    background-color: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.auth-box h2 {
+    font-family: var(--font-head);
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: var(--black);
+}
+
+.auth-input {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    outline: none;
+    transition: border 0.2s;
+}
+
+.auth-input:focus {
+    border-color: var(--primary);
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 14px;
+    background-color: var(--black);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.submit-btn:hover {
+    background-color: var(--primary);
+}
+
+/* Links inside auth forms */
+.auth-box a {
+    color: var(--primary);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.auth-box a:hover {
+    text-decoration: underline;
+}
+
 /* --- RESPONSIVE --- */
 @media (max-width: 768px) {
     .bento-grid { grid-template-columns: 1fr; } /* Stack on mobile */

@@ -88,6 +88,7 @@ const fetchNews = async () => {
                         author: authorId,
                         status: 'published',
                         imageUrl: article.urlToImage,
+                        url: article.url,
                     });
                     await newArticle.save();
                 }

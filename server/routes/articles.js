@@ -2,98 +2,103 @@
 const express = require('express');
 const router = express.Router();
 const Article = require('../models/Article');
-
-// Import our new middleware
+const User = require('../models/User'); // <--- CRITICAL IMPORT
 const { protect } = require('../middleware/authMiddleware');
 
-// --- @route   POST /api/articles ---
-// --- @desc    Create a new article ---
-// --- @access  Private (we use our 'protect' middleware) ---
-router.post('/', protect, async (req, res) => {
-  const { title, content, excerpt, category, imageUrl, status } = req.body;
-
-  if (!title || !content || !excerpt || !category) {
-    return res.status(400).json({ message: 'Please fill all required fields' });
-  }
-
-  try {
-    const newArticle = new Article({
-      title,
-      content,
-      excerpt,
-      category,
-      imageUrl: imageUrl || '',
-      status: status || 'draft',
-      author: req.user._id, // req.user comes from the 'protect' middleware
-    });
-
-    const savedArticle = await newArticle.save();
-    res.status(201).json(savedArticle);
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error while creating article' });
-  }
-});
-
-// --- @route   GET /api/articles ---
-// --- @desc    Get all published articles ---
-// --- @access  Public ---
+// 1. GET ALL ARTICLES
 router.get('/', async (req, res) => {
   try {
-    // Find all articles that are 'published' and sort by newest
-    const articles = await Article.find({ status: 'published' })
-      .populate('author', 'name') // Only get the author's name
-      .sort({ createdAt: -1 });
-
-    res.status(200).json(articles);
-
+    const articles = await Article.find({ status: 'published' }).sort({ createdAt: -1 });
+    res.json(articles);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error while fetching articles' });
+    res.status(500).json({ message: 'Server Error' });
   }
 });
 
-// --- @route   GET /api/articles/:id ---
-// --- @desc    Get a single article by its ID ---
-// --- @access  Public ---
-router.get('/:id', async (req, res) => {
-  try {
-    const article = await Article.findById(req.params.id)
-      .populate('author', 'name');
-
-    if (!article) {
-      return res.status(404).json({ message: 'Article not found' });
-    }
-
-    // Optional: We can add view-counting logic here later
-
-    res.status(200).json(article);
-
-  } catch (err) {
-    console.error(err);
-    if (err.kind === 'ObjectId') {
-       return res.status(404).json({ message: 'Article not found (invalid ID)' });
-    }
-    res.status(500).json({ message: 'Server error while fetching article' });
-  }
-});
-
-// --- @route   GET /api/articles/trending ---
-// --- @desc    Get top 5 most viewed articles ---
-// --- @access  Public ---
+// 2. GET TRENDING
 router.get('/trending', async (req, res) => {
   try {
-    const trendingArticles = await Article.find({ status: 'published' })
-      .sort({ views: -1 }) // Sort by views, descending (most first)
-      .limit(5)             // Get only the top 5
-      .populate('author', 'name');
-
-    res.status(200).json(trendingArticles);
-
+    const articles = await Article.find({ status: 'published' })
+      .sort({ views: -1 })
+      .limit(5);
+    res.json(articles);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error while fetching trending articles' });
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+// 3. GET SINGLE ARTICLE (AND COUNT VIEW)
+router.get('/:id', async (req, res) => {
+  try {
+    const article = await Article.findById(req.params.id);
+    if (!article) return res.status(404).json({ message: 'Article not found' });
+
+    // Increment view count
+    article.views = (article.views || 0) + 1;
+    await article.save();
+
+    res.json(article);
+  } catch (err) {
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+// 4. LIKE ARTICLE
+router.put('/:id/like', protect, async (req, res) => {
+  try {
+    const article = await Article.findById(req.params.id);
+    const user = await User.findById(req.user._id);
+
+    // Initialize likes if undefined
+    if (!article.likes) article.likes = 0;
+    if (!user.likedArticles) user.likedArticles = [];
+
+    // Check if already liked
+    const isLiked = user.likedArticles.includes(article._id);
+
+    if (isLiked) {
+      article.likes = Math.max(0, article.likes - 1); // Unlike
+      user.likedArticles = user.likedArticles.filter(id => id.toString() !== article._id.toString());
+    } else {
+      article.likes += 1; // Like
+      user.likedArticles.push(article._id);
+    }
+
+    await article.save();
+    await user.save();
+
+    res.json({ likes: article.likes, liked: !isLiked });
+  } catch (err) {
+    console.error("Like Error:", err);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+// 5. POST COMMENT
+router.post('/:id/comment', protect, async (req, res) => {
+  try {
+    const { text } = req.body;
+    if (!text) return res.status(400).json({ message: 'Text is required' });
+
+    const article = await Article.findById(req.params.id);
+    const user = await User.findById(req.user._id);
+
+    if (!article) return res.status(404).json({ message: 'Article not found' });
+
+    const newComment = {
+      user: user.name, // Store user name
+      text: text,
+      date: new Date()
+    };
+
+    // Add to beginning of array
+    article.comments.unshift(newComment);
+
+    await article.save();
+    res.json(article.comments);
+  } catch (err) {
+    console.error("Comment Error:", err);
+    res.status(500).json({ message: 'Server Error' });
   }
 });
 

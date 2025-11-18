@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile - PulsePoint</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="top-bar">
+            <a href="index.html" class="logo-container">
+                <img src="assets/pulsepoint_logo.png" alt="PulsePoint" class="logo-img">
+                <span class="logo-text">PulsePoint</span>
+            </a>
+            <div>
+                <button onclick="logout()" class="btn-auth btn-register">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container" style="display:block;">
+        <div class="section-header" id="profile-name">My Profile</div>
+        
+        <div style="margin-bottom:20px; border-bottom:1px solid #ddd;">
+            <button class="nav-link" onclick="showTab('saved')" style="border:none; background:none; padding:10px; font-size:1.2rem;">Saved Articles</button>
+        </div>
+
+        <div class="bento-grid" id="saved-feed">
+            <p>Loading saved articles...</p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Load profile on open
+        document.addEventListener('DOMContentLoaded', loadProfile);
+    </script>
+</body>
+</html>
